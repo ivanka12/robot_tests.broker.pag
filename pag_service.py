@@ -7,14 +7,9 @@ import os
 import urllib
 
 
-def get_library():
-    return BuiltIn().get_library_instance('Selenium2Library')
-
 def convert_date_to_dash_format(date):
     return datetime.strptime(date,'%d.%m.%Y').strftime('%Y-%m-%d')
 
-def get_webdriver_instance():
-    return get_library()._current_browser()
 
 def get_cur_date():
     dnow = datetime.now()
