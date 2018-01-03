@@ -1183,3 +1183,14 @@ Login
    Підтвердження дії в модальном вікні
    Wait Until Page Contains   Заявка знята з черги на кваліфікацію. Очікуйте повернення гарантійного внеску   15
    Перевірити та сховати повідомлення
+
+Внести зміни в тендер
+  [Arguments]  @{ARGUMENTS}
+  [Documentation]
+  ...      ${ARGUMENTS[0]} =  username
+  ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
+  ${period_interval}=  Get Broker Property By Username  ${ARGUMENTS[0]}  period_interval
+  ${ADDITIONAL_DATA}=  prepare_test_tender_data  ${period_interval}  single
+  ${items}=         Get From Dictionary   ${tender_data.data}               items
+  ${description}=   Get From Dictionary   ${tender_data.data}               description
+  pag.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
