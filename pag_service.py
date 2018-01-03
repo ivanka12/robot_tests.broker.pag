@@ -25,9 +25,6 @@ def convert_datetime_for_delivery(isodate):
     date_string = iso_dt.strftime("%Y-%m-%d %H:%M")
     return date_string
 
-def concat(val1,val2):
-    return val1+val2
-
 def create_question_id(field,prefix):
     return 'q_'+field+ '_' + prefix
 
