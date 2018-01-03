@@ -67,8 +67,8 @@ ${locator.awards[1].status}                                    css=.award_status
 Підготувати клієнт для користувача
   [Arguments]  ${username}
   [Documentation]  Відкрити браузер, створити об’єкт api wrapper, тощо
-  Set Global Variable   ${UBIZ_LOT_ID}   ${EMPTY}
-  Set Global Variable   ${UBIZ_MODIFICATION_DATE}   ${EMPTY}
+  Set Global Variable   ${PAG_LOT_ID}   ${EMPTY}
+  Set Global Variable   ${PAG_MODIFICATION_DATE}   ${EMPTY}
   Set Global Variable   ${GLOBAL_USER_NAME}    ${username}
   ${alias}=   Catenate   SEPARATOR=   role_  ${username}
   Set Global Variable   ${BROWSER_ALIAS}   ${alias}
@@ -140,17 +140,17 @@ Login
    Додати багато предметів   ${items}
 
    ${lotID}=   Get Text    id=lotID
-   Set Global Variable   ${UBIZ_LOT_ID}   ${lotID}
+   Set Global Variable   ${PAG_LOT_ID}   ${lotID}
    Click Element  id=btn_finished
    Wait Until Page Contains  Заявка на торги  30
-   ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-   ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _publish_lot
+   ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+   ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _publish_lot
    Клацнути по випадаючому списку   ${drop_id}
    Виконати дію   ${action_id}
    Wait Until Page Contains   Запис знаходиться в стані очікування публікації в ЦБД   60
    Перевірити та сховати повідомлення
-   Wait Until Element Is Visible   xpath=//a[contains(@href,'${UBIZ_LOT_ID}')]   15
-   Click Link   xpath=//a[contains(@href,'${UBIZ_LOT_ID}')]
+   Wait Until Element Is Visible   xpath=//a[contains(@href,'${PAG_LOT_ID}')]   15
+   Click Link   xpath=//a[contains(@href,'${PAG_LOT_ID}')]
    Wait Until Page Contains   Ідентифікатор аукціону   30
    ${ua_id}=   Get Text  id=auid
    [return]   ${ua_id}
@@ -193,8 +193,8 @@ Login
 
 Перейти в розділ додавання активів
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _edit_lot
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _edit_lot
   Клацнути по випадаючому списку   ${drop_id}
   Виконати дію   ${action_id}
   Wait Until Element Is Visible   id=to_params   15
@@ -236,7 +236,7 @@ Login
 
 Зберегти ід лоту майданчка
     ${lotID}=  Отримати інформацію про lotID
-    Set Global Variable   ${UBIZ_LOT_ID}  ${lotID}
+    Set Global Variable   ${PAG_LOT_ID}  ${lotID}
 
 Пошук тендера по ідентифікатору
     [Arguments]  @{ARGUMENTS}
@@ -250,20 +250,20 @@ Login
     Run Keyword Unless  ${passed}  Fail  Тендер не знайдено за ${timeout_on_wait} секунд
     Click Element    xpath=(//div[@class='images-caption'])/a
     Wait Until Page Contains    ${ARGUMENTS[1]}   30
-    ${flag}=  Run Keyword And Return Status  Should Be Empty  ${UBIZ_LOT_ID}
+    ${flag}=  Run Keyword And Return Status  Should Be Empty  ${PAG_LOT_ID}
     Run Keyword If  ${flag}   Зберегти ід лоту майданчка
 
 Пошук тендера у разі наявності змін
   [Arguments]  ${last_mod_date}  ${username}  ${tender_uaid}
-  ${status}=   Run Keyword And Return Status   Should Not Be Equal   ${UBIZ_MODIFICATION_DATE}   ${last_mod_date}
+  ${status}=   Run Keyword And Return Status   Should Not Be Equal   ${PAG_MODIFICATION_DATE}   ${last_mod_date}
   Run Keyword If   ${status}   pag.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
-  Set Global Variable   ${UBIZ_MODIFICATION_DATE}   ${last_mod_date}
+  Set Global Variable   ${PAG_MODIFICATION_DATE}   ${last_mod_date}
 
 Завантажити документ в тендер з типом
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${documentType}
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_files
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_files
   Клацнути по випадаючому списку   ${drop_id}
   Виконати дію   ${action_id}
   Wait Until Element Is Visible   xpath=//input[@type='submit']   10
@@ -286,8 +286,8 @@ Login
     ...   ${ARGUMENTS[1]} == filepath
     ...   ${ARGUMENTS[2]} == tender_uaid
     Зайти в розділ списку лотів
-    ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-    ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_files
+    ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+    ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_files
     Клацнути по випадаючому списку   ${drop_id}
     Виконати дію   ${action_id}
     Wait Until Element Is Visible   id=fileInput13   15
@@ -839,8 +839,8 @@ Login
   ...   ${ARGUMENTS[1]} == tender_uaid
   ...   ${ARGUMENTS[2]} == filepath
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_imgs
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_imgs
   Клацнути по випадаючому списку   ${drop_id}
   Wait Until Page Contains    Завантажити фото   3
   Виконати дію   ${action_id}
@@ -851,8 +851,8 @@ Login
 Додати публічний паспорт активу
   [Arguments]  ${username}  ${tender_uaid}  ${certificate_url}
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_assets_link
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_assets_link
   Клацнути по випадаючому списку  ${drop_id}
   Виконати дію   ${action_id}
   Wait Until Element Is Visible   id=OpLotForm_op_assets_link   10
@@ -865,8 +865,8 @@ Login
 Додати офлайн документ
   [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_access_details
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_access_details
   Клацнути по випадаючому списку  ${drop_id}
   Виконати дію   ${action_id}
   Wait Until Element Is Visible   id=OpLotForm_op_accessDetails   10
@@ -883,8 +883,8 @@ Login
     ...   ${ARGUMENTS[1]} == tender_uaid
     ...   ${ARGUMENTS[2]} == link
     Зайти в розділ списку лотів
-    ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-    ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _add_vdr
+    ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+    ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _add_vdr
     Клацнути по випадаючому списку  ${drop_id}
     Wait Until Page Contains    Прикріпити посилання на вдр   3
     Виконати дію   ${action_id}
@@ -984,8 +984,8 @@ Login
   ...   ${ARGUMENTS[4]} == description
   pag.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Зайти в розділ списку лотів
-  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${UBIZ_LOT_ID}
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}  _cancel_lot
+  ${drop_id}=  Catenate   SEPARATOR=   lot_  ${PAG_LOT_ID}
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}  _cancel_lot
   Клацнути по випадаючому списку  ${drop_id}
   Wait Until Page Contains    Скасувати аукціон   3
   Виконати дію    ${action_id}
@@ -1040,8 +1040,8 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
   pag.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Зайти в розділ кваліфікація
-  ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _confirm_protocol
+  ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _confirm_protocol
   Wait Until Keyword Succeeds   10 x   20 s   Run Keywords
   ...   Reload Page
   ...   AND   Клацнути по випадаючому списку  ${drop_id}
@@ -1065,8 +1065,8 @@ Login
 Завантажити документ рішення кваліфікаційної комісії
   [ARGUMENTS]   ${username}   ${file_path}  ${tender_uaid}  ${award_index}
   Зайти в розділ кваліфікація
-  ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _disqualification
+  ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _disqualification
   Wait Until Keyword Succeeds   10 x   20 s   Run Keywords
   ...   Reload Page
   ...   AND   Клацнути по випадаючому списку  ${drop_id}
@@ -1078,14 +1078,14 @@ Login
 Дискваліфікувати постачальника
   [ARGUMENTS]   ${user_name}   ${tender_uaid}  ${award_index}  ${description}
   Зайти в розділ кваліфікація
-  ${verification}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending.verification
-  ${payment}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending.payment
-  ${active}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _active
+  ${verification}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending.verification
+  ${payment}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending.payment
+  ${active}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _active
   Wait Until Keyword Succeeds   10 x   20 s   Run Keywords
   ...   Reload Page
   ...   AND   Element Should Be Visible   xpath=//*[contains(@id, '${verification}') or contains(@id,'${payment}') or contains(@id,'${active}')]
   ...   AND   Click Element   xpath=//*[contains(@id, '${verification}') or contains(@id,'${payment}') or contains(@id,'${active}')]
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _disqualification
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _disqualification
   Wait Until Page Contains   Дискваліфікувати
   Виконати дію   ${action_id}
   Wait Until Element Is Visible   id=DisqualificationForm_op_title   10
@@ -1103,8 +1103,8 @@ Login
 Перейти на форму підписання контракту
   [Arguments]   ${username}   ${tender_uaid}
   Зайти в розділ контракти
-  ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending
-  ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _publish_contract
+  ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending
+  ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _publish_contract
   Wait Until Keyword Succeeds   10 x   20 s   Run Keywords
   ...   Reload Page
   ...   AND   Клацнути по випадаючому списку  ${drop_id}
@@ -1129,8 +1129,8 @@ Login
 Завантажити протокол аукціону в авард
    [Arguments]   ${user_name}   ${tender_uaid}   ${auction_protocol_path}   ${award_index}
    Зайти в розділ кваліфікація
-   ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending.verification
-   ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _uploadprotocol
+   ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending.verification
+   ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _uploadprotocol
    Wait Until Keyword Succeeds   5 x   10 s   Run Keywords
    ...   Reload Page
    ...   AND   Клацнути по випадаючому списку  ${drop_id}
@@ -1146,8 +1146,8 @@ Login
 Підтвердити наявність протоколу аукціону
    [Arguments]   ${user_name}   ${tender_uaid}   ${award_index}
    Зайти в розділ кваліфікація
-   ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending.verification
-   ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _confirm_protocol
+   ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending.verification
+   ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _confirm_protocol
    Клацнути по випадаючому списку     ${drop_id}
    Виконати дію   ${action_id}
    Wait Until Page Contains   Ви дійсно підтверджуєте протокол?   10
@@ -1160,8 +1160,8 @@ Login
    ...   ${ARGUMENTS[0]} == username
    ...   ${ARGUMENTS[1]} == tender_uaid
    Зайти в розділ кваліфікація
-   ${drop_id}=  Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _pending.payment
-   ${action_id}=   Catenate   SEPARATOR=   ${UBIZ_LOT_ID}   _confirm_payment
+   ${drop_id}=  Catenate   SEPARATOR=   ${PAG_LOT_ID}   _pending.payment
+   ${action_id}=   Catenate   SEPARATOR=   ${PAG_LOT_ID}   _confirm_payment
    Клацнути по випадаючому списку     ${drop_id}
    Виконати дію   ${action_id}
    Wait Until Page Contains   Ви дійно підтверджуєте оплату?   10
