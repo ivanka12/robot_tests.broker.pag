@@ -681,8 +681,9 @@ Login
 
 Отримати інформацію про tenderAttempts
   Показати вкладку параметри аукціону
-  ${return_value}=   Отримати текст із поля і показати на сторінці   tenderAttempts
-  [return]   ${return_value}
+  ${tenderAttempts}=   Отримати текст із поля і показати на сторінці   tenderAttempts
+  ${tenderAttempts}=   Convert To Integer   ${tenderAttempts}
+  [return]   ${tenderAttempts}
 
 Отримати інформацію про auctionPeriod.startDate
   Показати вкладку параметри аукціону
