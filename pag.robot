@@ -910,7 +910,7 @@ Login
     ...   ${ARGUMENTS[2]} == question_id
     ...   ${ARGUMENTS[3]} == field_name
     pag.Пошук тендера у разі наявності змін   ${TENDER['LAST_MODIFICATION_DATE']}  ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-    Wait Until Element Is Visible   id=button_tab3
+    Wait Until Element Is Visible   id=button_tab3   10
     Wait Until Keyword Succeeds   15 x   20 s    Дочекатися відображення запитання на сторінці   ${ARGUMENTS[2]}
     ${q_id}=   create_question_id  ${ARGUMENTS[3]}  ${ARGUMENTS[2]}
     ${question_value}=   Get Text   id=${q_id}
@@ -1137,7 +1137,7 @@ Login
    ...   AND   Клацнути по випадаючому списку  ${drop_id}
    ...   AND   Element Should Be Visible   id=${action_id}
    Виконати дію   ${action_id}
-   Wait Until Element Is Visible   id=fileInput1
+   Wait Until Element Is Visible   id=fileInput1   10
    Приєднати документ   id=fileInput1   ${auction_protocol_path}
    Sleep    2
    Click Element   xpath=//input[@type="submit"]
