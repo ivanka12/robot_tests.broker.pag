@@ -909,11 +909,10 @@ Scroll Page To Element
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]   ${userName}   ${auctionId}   ${award_num}
-  pag.Пошук тендера по ідентифікатору   ${userName}   ${auctionId}
   Перейти в розділ купую
   Wait Until Keyword Succeeds   10 x   15 s   Run Keywords
   ...   Reload Page
-  ...   AND   Дія з пропозицією    bid-award-cancellation
+  ...   AND   Дія з пропозицією  ${auctionId}  bid-award-cancellation
 
 Таб Параметри аукціону
   Скролл до табів
