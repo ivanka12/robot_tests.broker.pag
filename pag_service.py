@@ -5,32 +5,52 @@ from datetime import datetime, timedelta
 from pytz import timezone
 import os
 import urllib
+import pytz
 
+
+def get_library():
+    return BuiltIn().get_library_instance('Selenium2Library')
 
 def convert_date_to_dash_format(date):
     return datetime.strptime(date,'%d.%m.%Y').strftime('%Y-%m-%d')
 
-
-def get_cur_date():
-    dnow = datetime.now()
-    return dnow.strftime('%Y-%m-%d %H:%M')
-
-def convert_datetime_for_delivery(isodate):
-    iso_dt = parse_date(isodate)
-    date_string = iso_dt.strftime("%Y-%m-%d %H:%M")
-    return date_string
-
-def create_question_id(field,prefix):
-    return 'q_'+field+ '_' + prefix
+def get_webdriver_instance():
+    return get_library()._current_browser()
 
 def adapt_items_data(field_name, value):
     if field_name == 'quantity':
-        value = int(value)
+        value = float(value)
     elif field_name == "unit.code":
-        value = convert_pag_string_to_common_string(value)
+        value = view_to_cdb_fromat(value)
+    elif field_name == "contractPeriod.startDate":
+        value = toISO(value)
+    elif field_name == "contractPeriod.endDate":
+        value = toISO(value)
     return value
 
-def convert_pag_string_to_common_string(string):
+def toISO(v_date):
+    time_zone = pytz.timezone('Europe/Kiev')
+    d_date = datetime.strptime(v_date, '%d.%m.%Y')
+    localized_date = time_zone.localize(d_date)
+    return localized_date.isoformat()
+
+def cdb_format_to_view_format(string):
+    return {
+        u"dgfFinancialAssets": u"Право вимоги",
+        u"dgfOtherAssets": u"Майно банку",
+        u"0": u"Невідомо",
+        u"1": u'Вперше',
+        u"2": u'Вдруге',
+        u"3": u'Втретє',
+        u"4": u'Вчетверте',
+        u"5": u"яте",
+        u"6": u"Вшосте",
+        u"7": u"Всьоме",
+        u"8": u"Ввосьме",
+        u"CPV": u"ДК021",
+    }.get(string, string)
+
+def view_to_cdb_fromat(string):
     return {
             u"пар": u"PR" ,
             u"літр" : u"LTR",
@@ -57,31 +77,32 @@ def convert_pag_string_to_common_string(string):
             u"MTK":u"метри квадратні",
             u"Право вимоги": u"dgfFinancialAssets",
             u"Майно банку": u"dgfOtherAssets",
-            u"Голандський аукціон": u"dgfInsider",
+            u"Голландський аукціон": u"dgfInsider",
             u"грн.": u"UAH",
             u"грн": u"UAH",
             u" з ПДВ": True,
             u"послуга":"E48",
             u"Картонки": u"Картонні коробки",
-            u"Період уточнень/пропозицій": u"active.tendering",
-            u"Період аукціону": u"active.auction",
-            u"Пропозиції розглянуто": u"active.awarded",
-            u"Період кваліфікації": u"active.qualification",
-            u"Завершений": u"complete",
-            u"Скасований": u"cancelled",
+            u"ПЕРІОД ПРОПОЗИЦІЙ": u"active.tendering",
+            u"ПЕРІОД АУКЦІОНУ": u"active.auction",
+            u"ПРОПОЗИЦІЇ РОЗГЛЯНУТО": u"active.awarded",
+            u"ПЕРІОД КВАЛІФІКАЦІЇ": u"active.qualification",
+            u"ЗАВЕРШЕНИЙ": u"complete",
+            u"СКАСОВАНИЙ": u"cancelled",
             u"Аукціон скасовано" : u"active",
-            u"Не відбувся" : u"unsuccessful",
+            u"НЕ ВІДБУВСЯ" : u"unsuccessful",
             u"Ліцензія" : u"financialLicense",
             u"Підписаний протокол" : u"auctionProtocol",
             u" - " : u"",
-            u"Вперше": 1,
-            u"Вдруге": 2,
-            u"Втретє": 3,
-            u"Вчетверте": 4,
-            u"x_presentation": u"fileInput11",
-            u"x_nda": u"fileInput12",
-            u"tenderNotice": u"fileInput13",
-            u"technicalSpecifications": u"fileInput14",
+            u"Невідомо": u"",
+            u'Вперше':1,
+            u'Вдруге':2,
+            u'Втретє':3,
+            u'Вчетверте':4,
+            u"Вп'яте":5,
+            u"Вшосте":6,
+            u"Всьоме":7,
+            u"Ввосьме":8,
             u"Повідомлення про аукціон" : "notice",
             u"Документи аукціону" : u"biddingDocuments",
             u"Публічний паспорт активу" : u"technicalSpecifications",
@@ -89,7 +110,6 @@ def convert_pag_string_to_common_string(string):
             u"Критерії прийнятності" : u"eligibilityCriteria",
             u"Публічний паспорт торгів" : u"virtualDataRoom",
             u"Ілюстрація" : u"illustration",
-            u" - " : u"",
             u"Посилання на публічний паспорт активу" : u"x_dgfPublicAssetCertificate",
             u"Презентація" : u"x_presentation",
             u"Договір про нерозголошення(NDA)" : u"x_nda",
@@ -99,10 +119,14 @@ def convert_pag_string_to_common_string(string):
             u"Порядку ознайомлення з майном" : u'x_dgfAssetFamiliarization',
             u"Очікується кінець кваліфікації" : u"pending.waiting",
             u"Очікується протокол" : u"pending.verification",
-            u"Очікується оплата" : u"pending.payment",
+            u"Очікується оплата" : u"active",
             u"Кандидат забрав гарантійний внесок" : u"cancelled",
             u"Аукціон неуспішний" : u"unsuccessful",
-            u"Оплачено, очікується підписання договору" : u"active"
+            u"Оплачено, очікується підписання договору" : u"active",
+            u"Скасування активоване": u'active',
+            u"Розглядається": u"pending",
+            u"Підписаний": u"active",
+            u"Скасовано до підписання": u"cancelled",
     }.get(string, string)
 
 def subtract_from_time(date_time, subtr_min, subtr_sec):
@@ -111,9 +135,27 @@ def subtract_from_time(date_time, subtr_min, subtr_sec):
                            seconds=int(subtr_sec)))
     return timezone('Europe/Kiev').localize(sub).strftime('%Y-%m-%dT%H:%M:%S.%f%z')
 
-def procuring_entity_name(tender_data):
-     tender_data.data.procuringEntity['name'] = u"ПАТ \"Прайм-Банк\""
-     return tender_data
+def prepare_auction(auctionData, roleName):
+    if roleName == 'tender_owner':
+        auctionData.data.procuringEntity['name']                      = u"ТОВ 4k-soft"
+        auctionData.data.procuringEntity['contactPoint']['telephone'] = u"0993698510"
+        auctionData.data.procuringEntity['contactPoint']['faxNumber'] = u"0993698511"
+
+    return auctionData
 
 def join(l, separator):
     return separator.join(l)
+
+def convert_iso_to_format(date, format):
+    return parse_date(date).strftime(format)
+
+def is_financial_procedure(auctionData):
+    if  auctionData.data['procurementMethodType'] == 'dgfFinancialAssets':
+        return True
+
+    if  auctionData.data['procurementMethodType'] == 'dgfInsider':
+        for item in auctionData.data['items']:
+            if item['classification']['id'][0:2] == '07':
+                return True
+
+    return False
