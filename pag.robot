@@ -255,7 +255,8 @@ Scroll Page To Element
 
 Чи фінансова процедура
   ${result}=  Run Keyword And Return Status
-  ...  Element Should Be Visible  xpath=//span[contains(text(), 'Право вимоги') or contains(text(), 'Права вимоги')]
+  ...  Element Should Be Visible  xpath=//span[@class='auction-dutchProcurementMethodType' and text()='Права вимоги']
+  
   Set Global Variable  ${isFinancial}  ${result}
 
 Подати цінову пропозицію
@@ -782,6 +783,8 @@ Scroll Page To Element
 
   ${awardNumber}=  Set Variable If  "Відображення статусу 'очікується протокол' для другого кандидата" == "${PREV TEST NAME}"  0  ${awardNumber}
   ${awardNumber}=  Set Variable If  "Можливість підтвердити другого кандидата" == "${PREV TEST NAME}"  0  ${awardNumber}
+  
+  ${awardNumber}=  Set Variable If  "Відображення статусу неуспішного лоту через відсутність завантаженого протоколу" == "${PREV TEST NAME}"  1  ${awardNumber}
 
   ${awardStatus}=  Get Text  xpath=//h3[contains(@class, 'award-status-${awardNumber}')]
   ${awardStatus}=  view_to_cdb_fromat  ${awardStatus}
