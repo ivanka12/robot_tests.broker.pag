@@ -294,6 +294,8 @@ Scroll Page To Element
   [Arguments]  ${auctionId}  ${htmlAttributeClass}
   Execute Javascript  $('span:contains("${auctionId}")').closest('.one_card').find('.fa-angle-down').click();
   Sleep               1
+  Wait Until Element Is Visible  css=.${htmlAttributeClass}
+  
   Execute Javascript  $(location).attr('href', $('span:contains("${auctionId}")').closest('.one_card').find('.${htmlAttributeClass}').attr('href'));
 
 Завантажити фінансову ліцензію
