@@ -785,6 +785,9 @@ Scroll Page To Element
   ${awardNumber}=  Set Variable If  "Можливість підтвердити другого кандидата" == "${PREV TEST NAME}"  0  ${awardNumber}
   
   ${awardNumber}=  Set Variable If  "Відображення статусу неуспішного лоту через відсутність завантаженого протоколу" == "${PREV TEST NAME}"  1  ${awardNumber}
+  
+  ${countAwards}=  Get Matching Xpath Count  //h3[contains(@class, 'award-status')]
+  ${awardNumber}=  Set Variable If  ${countAwards} > ${1}  ${awardNumber}  0
 
   ${awardStatus}=  Get Text  xpath=//h3[contains(@class, 'award-status-${awardNumber}')]
   ${awardStatus}=  view_to_cdb_fromat  ${awardStatus}
@@ -1076,3 +1079,22 @@ Scroll To Element
   ${datePaid}=  Get Text  css=.datePaid
   ${datePaid}=  subtract_from_time   ${datePaid}  0  0
   [return]      ${datePaid}
+
+Вказати дату отримання оплати
+  [Arguments]  ${userName}  ${auctionId}  ${contractNumber}  ${datePaid}
+  ubiz.Пошук тендера по ідентифікатору  ${userName}  ${auctionId}
+  Таб Контракт
+
+  Wait Until Element Is Visible  css=.contract-publication
+  Click Link                     css=.contract-publication
+
+  Wait Until Element Is Visible  xpath=//button[text()='Оновити']
+  Розгорнути блоки
+
+  ${datePaid}=  convert_iso_to_format  ${datePaid}  %Y-%m-%d %H:%M:%S
+
+  Execute Javascript   $('#publication-datepaid').val('${datePaid}');
+  Sleep               2
+
+  Click Element                  xpath=//button[text()='Оновити']
+  Wait Until Element Is Visible  xpath=//a[@href='#parameters']  45
