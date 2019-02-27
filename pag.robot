@@ -1084,7 +1084,7 @@ Scroll To Element
 
 Вказати дату отримання оплати
   [Arguments]  ${userName}  ${auctionId}  ${contractNumber}  ${datePaid}
-  ubiz.Пошук тендера по ідентифікатору  ${userName}  ${auctionId}
+  pag.Пошук тендера по ідентифікатору  ${userName}  ${auctionId}
   Таб Контракт
 
   Wait Until Element Is Visible  css=.contract-publication
